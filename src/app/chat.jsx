@@ -319,16 +319,19 @@ export default function Chat() {
   return (
     <>
       <canvas ref={canvasRef} style={{ display: "none"}} />
-      <div className="antialiased w-screen h-screen p-[30%] flex flex-col justify-center items-center bg-black">
-        <div className="w-full h-full sm:container sm:h-auto grid grid-rows[auto-1fr] grid-cols-[1fr] ">
-          <div className="relative">
+      <div className="flex flex-col h-screen bg-black">
+        <div className="flex flex-1 md:flex-row">
+          
+          {/* Main Content Section */}
+          <div className="w-full md:w-2/3 bg-black p-4">
+            {/* Main content goes here */}
             <video
               ref={videoRef}
               className="h-auto w-full aspect-[4/3] object-cover rounded-[1rem] bg-gray-900"
               autoPlay
             />
             {audio.isRecording ? (
-              <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center">
+              <div className="w-16 h-16 relative -top-24 left-4 flex justify-center items-center">
                 <div 
                   className="w-16 h-16 bg-red-500 opacity-50 rounded-full"
                   style={{
@@ -337,68 +340,74 @@ export default function Chat() {
                 ></div>
               </div>
             ) : (
-              <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center cursor-pointer">
+              <div className="w-16 h-16 relative -top-24 left-4 flex justify-center items-center cursor-pointer">
                 <div className="text-5xl text-red-500 opacity-50" >⏸</div>
               </div>
             )}
+            <div
+              className={`bg-[rgba(20,20,20,0.8)] h-full backdrop-blur-xl p-8 rounded-sm absolute left-0 top-0 bottom-0 right-1/2 ${displayDebug ? "translate-x-0" : "-translate-x-full"}`}
+            >
+              <div
+              className="absolute z-10 top-4 right-4 opacity-50 cursor-pointer"
+              onClick={() => setDisplayDebug(false)}
+              >X</div>
+              <div className="space-y-8">
+                <div className="space-y-2">
+                    <div className="font-semibold text-white opacity-50">Phase:</div>
+                    <p className="text-white">{phase}</p>
+                </div>
+                <div className="space-y-2">
+                    <div className="font-semibold text-white opacity-50">Transcript:</div>
+                    <p className="text-white">{transcription || "--"}</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold text-white opacity-50">Captures:</div>
+                  <img
+                    className="object-contain w-full border border-gray-500"
+                    alt="Grid"
+                    src={imagesGridUrl || transparentPixel}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-center p-12 text-md leading-relaxed relative">
-            <div>{lastAssistantMessage?.content}</div>
-            {isLoading && (
-              <div className="absolute left-50 top-50 w-8 h-8">
+          {/* Chat Section */}
+          <div className="w-full md:w-1/3 bg-black p-4 flex justify-center items-center" >
+            {/* Chat content goes here */}
+            {isLoading ? (
+              <div className="w-8 h-8">
                 <div className="w-6 h-6 -mr-3 -mt-3 rounded-full bg-cyan-500 animate-ping" />
               </div>
+            ) : (
+              <div>{lastAssistantMessage?.content}</div>
             )}
           </div>
         </div>
-      </div>
-      <div className="flex flex-wrap justify-center p-4 opacity-50 gap-2">
-        {isStarted ? (
-          <button
-            className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-            onClick={stopRecording}
-          >
-            Stop session
-          </button>
-        ) : (
-          <button
-            className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-            onClick={startRecording}
-          >
-            Start session
-          </button>
-        )}
-        <button
-            className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-            onClick={() => setDisplayDebug((p) => !p)}
-          >
-          Debug
-        </button>
-      </div>
-      <div
-        className={`bg-[rgba(20,20,20,0.8)] backdrop-blur-xl p-8 rounded-sm absolute left-0 top-0 bottom-0 right-1/2 ${displayDebug ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <div
-         className="absolute z-10 top-4 right-4 opacity-50 cursor-pointer"
-         onClick={() => setDisplayDebug(false)}
-        >X</div>
-        <div className="space-y-8">
-          <div className="space-y-2">
-              <div className="font-semibold text-white opacity-50">Phase:</div>
-              <p className="text-white">{phase}</p>
-          </div>
-          <div className="space-y-2">
-              <div className="font-semibold text-white opacity-50">Transcript:</div>
-              <p className="text-white">{transcription || "--"}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="font-semibold text-white opacity-50">Captures:</div>
-            <img
-              className="object-contain w-full border border-gray-500"
-              alt="Grid"
-              src={imagesGridUrl || transparentPixel}
-            />
-          </div>
+
+        {/* Fixed Bottom Buttons Section */}
+        <div className="fixed inset-x-0 bottom-0 bg-white dark:bg-gray-900 p-4">
+          {/* Buttons go here */}
+          {isStarted ? (
+              <button
+                className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
+                onClick={stopRecording}
+              >
+                Stop session
+              </button>
+            ) : (
+              <button
+                className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
+                onClick={startRecording}
+              >
+                Start session
+              </button>
+            )}
+            <button
+                className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
+                onClick={() => setDisplayDebug((p) => !p)}
+              >
+              Debug
+            </button>
         </div>
       </div>
     </>
